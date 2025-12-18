@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tournament Draw - Perfect Alignment</title>
+    <title>Tournament Draw</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
@@ -33,43 +33,23 @@
             transition: transform 4s cubic-bezier(0.1, 0, 0.15, 1); border: 8px solid #fff;
             box-shadow: 0 0 30px rgba(0,0,0,0.4);
             overflow: hidden;
-            background: #0d47a1;
         }
 
-        /* NEW CENTERED LABEL LOGIC */
         .wheel-label {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            text-align: right; /* Align text to the "end" of the radius */
-            padding-right: 40px; /* Distance from the outer edge */
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            transform-origin: 50% 50%; /* Rotate around wheel center */
-            pointer-events: none;
-            z-index: 2;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: flex-end;
+            padding-right: 40px; transform-origin: 50% 50%; pointer-events: none; z-index: 2;
         }
 
         .label-text {
-            display: inline-block;
-            font-weight: 800;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: white;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-            white-space: nowrap;
-            /* This ensures text stays upright relative to the radius */
-            transform: rotate(0deg); 
+            font-weight: 800; font-size: 11px; text-transform: uppercase; color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8); white-space: nowrap;
         }
 
         .wheel-center {
             position: absolute; width: 60px; height: 60px; background: white; border-radius: 50%;
             top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
-            display: flex; align-items: center; justify-content: center; color: #333;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: #333;
         }
 
         .pointer { 
@@ -86,31 +66,33 @@
         }
         .spin-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        .group-card { background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden; min-height: 120px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
-        .group-header { padding: 10px; text-align: center; background: rgba(0,0,0,0.4); color: #ffd32a; font-weight: bold; }
+        /* Allocation cards */
+        .group-card { background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden; min-height: 100px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
+        .group-header { padding: 8px; text-align: center; background: rgba(0,0,0,0.4); color: #ffd32a; font-weight: bold; }
         .group-teams { padding: 10px; }
-        .team-entry { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; border-left: 4px solid #4bcffa; }
+        .team-entry { background: rgba(255,255,255,0.1); padding: 8px; border-radius: 5px; margin-bottom: 5px; font-weight: bold; font-size: 0.85rem; border-left: 3px solid #4bcffa; }
         
         .teams-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-        .pool-item { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 5px; text-align: center; border: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; }
+        .pool-item { background: rgba(255,255,255,0.05); padding: 8px; border-radius: 5px; text-align: center; border: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; }
         .pool-item.used { opacity: 0.2; text-decoration: line-through; }
 
         .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .popup-content { background: #1a237e; padding: 40px; border-radius: 20px; border: 3px solid #ffd32a; text-align: center; max-width: 450px; width: 90%; }
-        .popup-team { font-size: 2.8rem; color: #ffd32a; margin: 20px 0; font-weight: 900; }
-        .btn { flex: 1; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .popup-team { font-size: 2.5rem; color: #ffd32a; margin: 15px 0; font-weight: 900; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .confirm { background: #4CAF50; color: white; }
         .cancel { background: #f44336; color: white; }
 
-        @media (max-width: 1000px) { .draw-layout { grid-template-columns: 1fr; } .wheel-container { width: 320px; height: 320px; } }
+        @media (max-width: 1000px) { .draw-layout { grid-template-columns: 1fr; } .wheel-container { width: 300px; height: 300px; } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>🏆 Tournament Draw 2024</h1>
-        <p>10 Teams | Precision Alignment | Balanced Spins</p>
+        <h1>🏆 Tournament Draw 2025</h1>
+           <p>Club United Winter Cup 2025-26 Season I
+           </p>
     </header>
 
     <div class="draw-layout">
@@ -126,11 +108,11 @@
             <div class="wheel-container">
                 <div class="pointer"></div>
                 <div id="wheel"></div>
-                <div class="wheel-center"><i class="fas fa-star"></i></div>
+                <div class="wheel-center"><i class="fas fa-bolt"></i></div>
             </div>
 
-            <button class="spin-btn" id="spinBtn" disabled>SPIN THE WHEEL</button>
-            <p id="statusLabel" style="text-align: center; margin-top: 15px; color: #4bcffa;">Select a group to start</p>
+            <button class="spin-btn" id="spinBtn" disabled>SPIN WHEEL</button>
+            <p id="statusLabel" style="text-align: center; margin-top: 15px; color: #4bcffa;">Select a group slot first</p>
         </section>
 
         <section class="panel">
@@ -145,18 +127,18 @@
     </div>
 
     <section class="panel" style="margin-top: 30px;">
-        <h2 class="section-title">Available Pool</h2>
+        <h2 class="section-title">Pool Status</h2>
         <div class="teams-grid" id="poolDisplay"></div>
     </section>
 </div>
 
 <div class="popup-overlay" id="popup">
     <div class="popup-content">
-        <h2 style="color: white;">WINNER</h2>
+        <h2 style="color: white;">SELECTION RESULT</h2>
         <div class="popup-team" id="pickedTeamName">TEAM NAME</div>
         <p>Assigning to: <span id="pickedGroupName" style="color: #4bcffa; font-weight: bold;"></span></p>
         <div class="popup-btns" style="display: flex; gap: 10px; margin-top: 20px;">
-            <button class="btn confirm" id="confirmAlloc">CONFIRM</button>
+            <button class="btn confirm" id="confirmAlloc">ACCEPT</button>
             <button class="btn cancel" id="cancelAlloc">RE-SPIN</button>
         </div>
     </div>
@@ -192,7 +174,7 @@
     function renderWheel() {
         if (available.length === 0) {
             wheel.style.background = "#222";
-            wheel.innerHTML = "";
+            wheel.innerHTML = "<div style='display:flex; height:100%; align-items:center; justify-content:center; font-weight:bold;'>DONE</div>";
             return;
         }
         
@@ -209,10 +191,7 @@
         
         wheel.innerHTML = available.map((t, i) => {
             const rotation = (i * slice) + (slice / 2);
-            return `
-                <div class="wheel-label" style="transform: rotate(${rotation}deg)">
-                    <span class="label-text">${t}</span>
-                </div>`;
+            return `<div class="wheel-label" style="transform: rotate(${rotation}deg)"><span class="label-text">${t}</span></div>`;
         }).join('');
     }
 
@@ -234,20 +213,22 @@
         const count = available.length;
         const sliceWidth = 360 / count;
 
-        const winnerIndex = Math.floor(Math.random() * count);
+        // TIME-BASED SELECTION LOGIC:
+        // We use the current millisecond value as a "seed" for randomness
+        const timeSeed = Date.now() % 1000;
+        const winnerIndex = Math.floor((timeSeed / 1000) * count);
         pickedTeam = available[winnerIndex];
 
-        // PRECISION MATH:
+        // POINTER CALCULATION:
         // Pointer is at 270 degrees.
-        // We calculate exactly where the center of the slice is and rotate the wheel
-        // so that specific center point lands at 270.
         const sliceCenter = (winnerIndex * sliceWidth) + (sliceWidth / 2);
         const targetBase = (270 - sliceCenter + 360) % 360;
 
-        // Jitter is strictly limited to +/- 5% of slice width to avoid landing on edges
-        const jitter = (Math.random() - 0.5) * (sliceWidth * 0.001);
+        // NATURAL JITTER:
+        // Limited to +/- 2 degrees so it stays very centered but looks realistic
+        const jitter = (Math.random() - 0.5) * 4;
 
-        const extraSpins = 8 * 360; 
+        const extraSpins = 6 * 360; 
         const currentRotationNormalized = currentDeg % 360;
         const rotationNeeded = (targetBase - currentRotationNormalized + 360) % 360;
         
