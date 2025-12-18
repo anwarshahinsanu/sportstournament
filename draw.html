@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Tournament Draw</title>
+    <title>Tournament Draw - Perfect Alignment</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
@@ -27,72 +27,82 @@
         .group-btn.active { background: rgba(75, 207, 250, 0.3); border-color: #4bcffa; transform: scale(1.05); }
         .group-btn.completed { background: rgba(76, 175, 80, 0.3); border-color: #4CAF50; cursor: not-allowed; opacity: 0.8; }
 
-        /* RE-ENGINEERED WHEEL */
-        .wheel-container { position: relative; width: 400px; height: 400px; margin: 20px auto; }
+        .wheel-container { position: relative; width: 420px; height: 420px; margin: 20px auto; }
         #wheel { 
             width: 100%; height: 100%; border-radius: 50%; position: relative; 
-            transition: transform 4s cubic-bezier(0.1, 0, 0.2, 1); border: 10px solid #fff;
+            transition: transform 4s cubic-bezier(0.1, 0, 0.15, 1); border: 8px solid #fff;
             box-shadow: 0 0 30px rgba(0,0,0,0.4);
-            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+            background: #0d47a1;
         }
 
+        /* NEW CENTERED LABEL LOGIC */
         .wheel-label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 50%;
-    height: 0;
-    transform-origin: 0% 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 13px;
-    text-transform: uppercase;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-    pointer-events: none;
-}
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            text-align: right; /* Align text to the "end" of the radius */
+            padding-right: 40px; /* Distance from the outer edge */
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            transform-origin: 50% 50%; /* Rotate around wheel center */
+            pointer-events: none;
+            z-index: 2;
+        }
 
+        .label-text {
+            display: inline-block;
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            white-space: nowrap;
+            /* This ensures text stays upright relative to the radius */
+            transform: rotate(0deg); 
+        }
 
         .wheel-center {
             position: absolute; width: 60px; height: 60px; background: white; border-radius: 50%;
             top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center; color: #333;
         }
 
         .pointer { 
-            position: absolute; width: 40px; height: 40px; background: #f44336; 
-            top: -20px; left: 50%; transform: translateX(-50%); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 20; 
+            position: absolute; width: 44px; height: 44px; background: #f44336; 
+            top: -22px; left: 50%; transform: translateX(-50%); 
+            clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 20; 
             filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
         }
 
         .spin-btn { 
             width: 100%; padding: 18px; background: #4CAF50; color: white; border: none; 
             border-radius: 50px; font-size: 1.3rem; font-weight: bold; cursor: pointer; margin-top: 15px;
-            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: 0.2s;
         }
         .spin-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
         .group-card { background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden; min-height: 120px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
         .group-header { padding: 10px; text-align: center; background: rgba(0,0,0,0.4); color: #ffd32a; font-weight: bold; }
         .group-teams { padding: 10px; }
-        .team-entry { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+        .team-entry { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; border-left: 4px solid #4bcffa; }
         
         .teams-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-        .pool-item { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 5px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-        .pool-item.used { opacity: 0.2; }
+        .pool-item { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 5px; text-align: center; border: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; }
+        .pool-item.used { opacity: 0.2; text-decoration: line-through; }
 
-        /* Popup */
         .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .popup-content { background: #1a237e; padding: 40px; border-radius: 20px; border: 3px solid #ffd32a; text-align: center; max-width: 450px; width: 90%; }
         .popup-team { font-size: 2.8rem; color: #ffd32a; margin: 20px 0; font-weight: 900; }
-        .popup-btns { display: flex; gap: 15px; margin-top: 30px; }
         .btn { flex: 1; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .confirm { background: #4CAF50; color: white; }
         .cancel { background: #f44336; color: white; }
 
-        @media (max-width: 1000px) { .draw-layout { grid-template-columns: 1fr; } }
+        @media (max-width: 1000px) { .draw-layout { grid-template-columns: 1fr; } .wheel-container { width: 320px; height: 320px; } }
     </style>
 </head>
 <body>
@@ -100,7 +110,7 @@
 <div class="container">
     <header>
         <h1>🏆 Tournament Draw 2024</h1>
-        <p>10 Teams | 5 Spins | Fair Allocation</p>
+        <p>10 Teams | Precision Alignment | Balanced Spins</p>
     </header>
 
     <div class="draw-layout">
@@ -116,11 +126,11 @@
             <div class="wheel-container">
                 <div class="pointer"></div>
                 <div id="wheel"></div>
-                <div class="wheel-center"></div>
+                <div class="wheel-center"><i class="fas fa-star"></i></div>
             </div>
 
             <button class="spin-btn" id="spinBtn" disabled>SPIN THE WHEEL</button>
-            <p id="statusLabel" style="text-align: center; margin-top: 15px; color: #4bcffa;">Select a group to unlock</p>
+            <p id="statusLabel" style="text-align: center; margin-top: 15px; color: #4bcffa;">Select a group to start</p>
         </section>
 
         <section class="panel">
@@ -142,12 +152,12 @@
 
 <div class="popup-overlay" id="popup">
     <div class="popup-content">
-        <h2 style="color: white;">TEAM SELECTED</h2>
+        <h2 style="color: white;">WINNER</h2>
         <div class="popup-team" id="pickedTeamName">TEAM NAME</div>
         <p>Assigning to: <span id="pickedGroupName" style="color: #4bcffa; font-weight: bold;"></span></p>
-        <div class="popup-btns">
+        <div class="popup-btns" style="display: flex; gap: 10px; margin-top: 20px;">
             <button class="btn confirm" id="confirmAlloc">CONFIRM</button>
-            <button class="btn cancel" id="cancelAlloc">SPIN AGAIN</button>
+            <button class="btn cancel" id="cancelAlloc">RE-SPIN</button>
         </div>
     </div>
 </div>
@@ -164,16 +174,14 @@
     const spinBtn = document.getElementById('spinBtn');
 
     function updateUI() {
-        // Update Pool Display
         document.getElementById('poolDisplay').innerHTML = teamData.map(t => 
             `<div class="pool-item ${available.includes(t) ? '' : 'used'}">${t}</div>`
         ).join('');
 
-        // Update Group Lists and Counts
         ['bye', 'A', 'B', 'C'].forEach(g => {
             const limit = g === 'bye' ? 1 : 3;
             document.getElementById(`${g === 'bye' ? 'bye' : 'group' + g}Count`).innerText = `${groups[g].length}/${limit}`;
-            document.getElementById(`list-${g}`).innerHTML = groups[g].map(t => `<div class="team-entry">⚽ ${t}</div>`).join('');
+            document.getElementById(`list-${g}`).innerHTML = groups[g].map(t => `<div class="team-entry">${t}</div>`).join('');
             const btn = document.querySelector(`[data-group="${g}"]`);
             if (groups[g].length >= limit) btn.classList.add('completed');
         });
@@ -183,15 +191,14 @@
 
     function renderWheel() {
         if (available.length === 0) {
-            wheel.style.background = "#333";
-            wheel.innerHTML = "DRAW OVER";
+            wheel.style.background = "#222";
+            wheel.innerHTML = "";
             return;
         }
         
         const count = available.length;
         const slice = 360 / count;
         
-        // Build Conic Gradient Colors
         let gradientParts = [];
         available.forEach((_, i) => {
             const color = i % 2 === 0 ? '#0d47a1' : '#1976d2';
@@ -200,14 +207,15 @@
         
         wheel.style.background = `conic-gradient(${gradientParts.join(', ')})`;
         
-        // Add Labels
         wheel.innerHTML = available.map((t, i) => {
             const rotation = (i * slice) + (slice / 2);
-            return `<div class="wheel-label" style="transform: rotate(${rotation}deg)">${t}</div>`;
+            return `
+                <div class="wheel-label" style="transform: rotate(${rotation}deg)">
+                    <span class="label-text">${t}</span>
+                </div>`;
         }).join('');
     }
 
-    // Group Selection
     document.querySelectorAll('.group-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const g = btn.dataset.group;
@@ -216,46 +224,44 @@
             btn.classList.add('active');
             activeGroup = g;
             spinBtn.disabled = false;
-            document.getElementById('statusLabel').innerText = "Wheel Ready!";
         });
     });
 
-    // Spin Logic
-   // Spin Logic
-// Spin Logic
-spinBtn.addEventListener('click', () => {
-    spinBtn.disabled = true;
+    spinBtn.addEventListener('click', () => {
+        if (!activeGroup) return;
+        spinBtn.disabled = true;
 
-    const slice = 360 / available.length;
+        const count = available.length;
+        const sliceWidth = 360 / count;
 
-    // Random spin
-    const fullSpins = 5 * 360;
-    const randomOffset = Math.random() * 360;
+        const winnerIndex = Math.floor(Math.random() * count);
+        pickedTeam = available[winnerIndex];
 
-    currentDeg += fullSpins + randomOffset;
-    wheel.style.transform = `rotate(${currentDeg}deg)`;
+        // PRECISION MATH:
+        // Pointer is at 270 degrees.
+        // We calculate exactly where the center of the slice is and rotate the wheel
+        // so that specific center point lands at 270.
+        const sliceCenter = (winnerIndex * sliceWidth) + (sliceWidth / 2);
+        const targetBase = (270 - sliceCenter + 360) % 360;
 
-    setTimeout(() => {
-        // Normalize angle (0–360)
-        const normalizedDeg = ((currentDeg % 360) + 360) % 360;
+        // Jitter is strictly limited to +/- 5% of slice width to avoid landing on edges
+        const jitter = (Math.random() - 0.5) * (sliceWidth * 0.001);
 
-        // Pointer is at top (270°)
-        const pointerAngle = (270 - normalizedDeg + 360) % 360;
+        const extraSpins = 8 * 360; 
+        const currentRotationNormalized = currentDeg % 360;
+        const rotationNeeded = (targetBase - currentRotationNormalized + 360) % 360;
+        
+        currentDeg += extraSpins + rotationNeeded + jitter;
 
-        // Calculate index under pointer
-        const idx = Math.floor(pointerAngle / slice) % available.length;
+        wheel.style.transform = `rotate(${currentDeg}deg)`;
 
-        pickedTeam = available[idx];
+        setTimeout(() => {
+            document.getElementById('pickedTeamName').innerText = pickedTeam;
+            document.getElementById('pickedGroupName').innerText = activeGroup.toUpperCase();
+            document.getElementById('popup').style.display = 'flex';
+        }, 4100);
+    });
 
-        document.getElementById('pickedTeamName').innerText = pickedTeam;
-        document.getElementById('pickedGroupName').innerText = activeGroup.toUpperCase();
-        document.getElementById('popup').style.display = 'flex';
-
-        console.log("VISUAL & LOGICAL MATCH:", pickedTeam);
-    }, 4100);
-});
-
-    // Confirmation
     document.getElementById('confirmAlloc').addEventListener('click', () => {
         groups[activeGroup].push(pickedTeam);
         available = available.filter(t => t !== pickedTeam);
