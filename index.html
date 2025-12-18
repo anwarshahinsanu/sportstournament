@@ -24,20 +24,7 @@
             max-width: 1600px;
             margin: 0 auto;
         }
-        /* Logo Styles */
-/* Logo Styling Only */
-.site-logo {
-    height: 100px; /* Reduced from 100px to fit in 80px circle */
-    width: auto;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-    transition: transform 0.3s ease;
-}
-
-.site-logo:hover {
-    transform: scale(1.05);
-}
-
-/* Remove or keep these as needed */
+        /* Logo Styles for Index Page */
 .logo-container {
     position: absolute;
     top: 20px;
@@ -46,22 +33,46 @@
 }
 
 
-/* Adjust header for logo */
+
+.logo-background:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    border-color: #4bcffa;
+}
+
+.site-logo {
+    height: 100px;
+    width: auto;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+/* Adjust header padding for logo */
 header {
     position: relative;
     text-align: center;
-    padding: 25px 0;
+    padding: 25px 0 25px 0;
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
     margin-bottom: 30px;
+    min-height: 150px; /* Add space for logo */
 }
 
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .site-logo {
-        height: 40px;
-    }
     .logo-container {
-        top: 15px;
-        left: 15px;
+        position: relative;
+        top: 0;
+        left: 0;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .logo-background {
+        margin: 0 auto;
+    }
+    
+    header {
+        min-height: auto;
+        padding-top: 15px;
     }
 }
 
@@ -87,6 +98,43 @@ header {
             line-height: 1.6;
         }
 
+        /* Draw Link Buttons */
+        .draw-links-container {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .draw-link {
+            display: inline-block;
+            background: linear-gradient(to right, #9C27B0, #673AB7);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+            border: 2px solid transparent;
+        }
+
+        .draw-link:hover {
+            background: linear-gradient(to right, #7B1FA2, #512DA8);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(156, 39, 176, 0.4);
+            border-color: #FFD700;
+        }
+
+        .draw-link.spin {
+            background: linear-gradient(to right, #FF5722, #FF9800);
+        }
+
+        .draw-link.spin:hover {
+            background: linear-gradient(to right, #E64A19, #F57C00);
+        }
+
         .tournament-overview {
             background: rgba(255, 255, 255, 0.08);
             border-radius: 15px;
@@ -110,6 +158,20 @@ header {
             display: flex;
             align-items: center;
             gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .overview-card.draw-card {
+            cursor: pointer;
+            background: rgba(255, 87, 34, 0.15);
+            border: 2px solid rgba(255, 87, 34, 0.3);
+        }
+
+        .overview-card.draw-card:hover {
+            background: rgba(255, 87, 34, 0.25);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 87, 34, 0.2);
+            border-color: #FF5722;
         }
 
         .overview-icon {
@@ -122,6 +184,19 @@ header {
             justify-content: center;
             font-size: 1.8rem;
             flex-shrink: 0;
+        }
+
+        .draw-card .overview-icon {
+            background: rgba(255, 87, 34, 0.3);
+        }
+
+        .draw-card .overview-icon i {
+            animation: spin-slow 3s infinite linear;
+        }
+
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .tournament-visualization {
@@ -397,6 +472,41 @@ header {
             opacity: 0.8;
         }
 
+        /* Floating Draw Button */
+        .floating-draw-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+            color: white;
+            padding: 18px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: bold;
+            box-shadow: 0 6px 20px rgba(156, 39, 176, 0.4);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .floating-draw-btn:hover {
+            background: linear-gradient(135deg, #7B1FA2, #512DA8);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(156, 39, 176, 0.5);
+            border-color: #FFD700;
+        }
+
+        .floating-draw-btn i {
+            font-size: 1.5rem;
+        }
+
+        .floating-draw-btn span {
+            font-size: 1.1rem;
+        }
+
         /* Responsive */
         @media (max-width: 1100px) {
             .knockout-container {
@@ -423,6 +533,27 @@ header {
             .groups-container, .fixtures-container {
                 grid-template-columns: 1fr;
             }
+            
+            .floating-draw-btn span {
+                display: none;
+            }
+            
+            .floating-draw-btn {
+                padding: 20px;
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .draw-links-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .draw-link {
+                width: 100%;
+                max-width: 300px;
+                text-align: center;
+            }
         }
 
         .highlight {
@@ -444,10 +575,27 @@ header {
 <body>
     <div class="container">
         <header>
-           
-            <h1>Club United Winter Cup 2025-26
-                Season I</h1>
+            <div class="logo-container">
+                <a href="index.html" style="text-decoration: none;">
+                    <div class="logo-background">
+                        <img src="logo.png" alt="Club United Logo" class="site-logo">
+                    </div>
+                </a>
+            </div>
+            
+            <h1>Club United Winter Cup 2025-26 Season I</h1>
+            
             <p class="subtitle">10 Teams | 3 Groups + 1 Bye Team | Group Stage + Elimination Match + Semi-Finals + Final</p>
+            
+            <!-- Interactive Draw Links -->
+            <div class="draw-links-container">
+                <a href="draw.html" class="draw-link">
+                    <i class="fas fa-dharmachakra"></i> Start Draw
+                </a>
+                <a href="team.html" class="draw-link spin">
+                    <i class="fas fa-random"></i> Group and team
+                </a>
+            </div>
         </header>
 
         <section class="tournament-overview">
@@ -483,6 +631,9 @@ header {
                         <p>Elimination + Semi-Finals + Final</p>
                     </div>
                 </div>
+                
+                <!-- Interactive Draw Card -->
+              
             </div>
         </section>
 
@@ -771,7 +922,15 @@ header {
         <footer>
             <p>Tournament Match Schedule  &copy; 2025 | 10 Teams Tournament Structure</p>
             <p>Group Stage (9 matches) → Elimination Match → Semi-Finals (2 matches) → Final (1 match)</p>
+            <p style="margin-top: 10px;">
+                <a href="draw.html" style="color: #4bcffa; text-decoration: none;">
+                    <i class="fas fa-external-link-alt"></i> Go to Interactive Tournament Draw →
+                </a>
+            </p>
         </footer>
+        
+        <!-- Floating Draw Button -->
+        
     </div>
 
     <script>
@@ -808,6 +967,14 @@ header {
                 step.style.animation = `fadeIn 0.5s ease forwards`;
                 step.style.opacity = '0';
             });
+            
+            // Add click event to draw card
+            const drawCard = document.querySelector('.draw-card');
+            if (drawCard) {
+                drawCard.addEventListener('click', function() {
+                    window.location.href = 'draw-interactive.html';
+                });
+            }
             
             // Add CSS animation
             const style = document.createElement('style');
