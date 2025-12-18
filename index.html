@@ -24,6 +24,46 @@
             max-width: 1600px;
             margin: 0 auto;
         }
+        /* Logo Styles */
+/* Logo Styling Only */
+.site-logo {
+    height: 100px; /* Reduced from 100px to fit in 80px circle */
+    width: auto;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    transition: transform 0.3s ease;
+}
+
+.site-logo:hover {
+    transform: scale(1.05);
+}
+
+/* Remove or keep these as needed */
+.logo-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+}
+
+
+/* Adjust header for logo */
+header {
+    position: relative;
+    text-align: center;
+    padding: 25px 0;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+    .site-logo {
+        height: 40px;
+    }
+    .logo-container {
+        top: 15px;
+        left: 15px;
+    }
+}
 
         header {
             text-align: center;
@@ -404,6 +444,11 @@
 <body>
     <div class="container">
         <header>
+            <div class="logo-container">
+                <div class="logo-background">
+                    <img src="logo.png" alt="Club United Logo" class="site-logo">
+                </div>
+            </div>
             <h1>Club United Winter Cup 2025-26
                 Season I</h1>
             <p class="subtitle">10 Teams | 3 Groups + 1 Bye Team | Group Stage + Elimination Match + Semi-Finals + Final</p>
