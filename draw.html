@@ -37,22 +37,23 @@
         }
 
         .wheel-label {
-            position: absolute;
-            width: 50%;
-            height: 40px;
-            transform-origin: left center;
-            left: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 20px;
-            font-weight: 800;
-            font-size: 13px;
-            text-transform: uppercase;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            pointer-events: none;
-        }
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 0;
+    transform-origin: 0% 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    pointer-events: none;
+}
+
 
         .wheel-center {
             position: absolute; width: 60px; height: 60px; background: white; border-radius: 50%;
@@ -220,25 +221,39 @@
     });
 
     // Spin Logic
-    spinBtn.addEventListener('click', () => {
-        spinBtn.disabled = true;
-        const idx = Math.floor(Math.random() * available.length);
+   // Spin Logic
+// Spin Logic
+spinBtn.addEventListener('click', () => {
+    spinBtn.disabled = true;
+
+    const slice = 360 / available.length;
+
+    // Random spin
+    const fullSpins = 5 * 360;
+    const randomOffset = Math.random() * 360;
+
+    currentDeg += fullSpins + randomOffset;
+    wheel.style.transform = `rotate(${currentDeg}deg)`;
+
+    setTimeout(() => {
+        // Normalize angle (0–360)
+        const normalizedDeg = ((currentDeg % 360) + 360) % 360;
+
+        // Pointer is at top (270°)
+        const pointerAngle = (270 - normalizedDeg + 360) % 360;
+
+        // Calculate index under pointer
+        const idx = Math.floor(pointerAngle / slice) % available.length;
+
         pickedTeam = available[idx];
 
-        const slice = 360 / available.length;
-        // Pointer is at TOP (270 degrees in coordinate space)
-        // We calculate distance to the selected slice
-        const landing = 360 - (idx * slice) - (slice / 2);
-        
-        currentDeg += 1800 + landing; // 5 full spins + landing offset
-        wheel.style.transform = `rotate(${currentDeg}deg)`;
+        document.getElementById('pickedTeamName').innerText = pickedTeam;
+        document.getElementById('pickedGroupName').innerText = activeGroup.toUpperCase();
+        document.getElementById('popup').style.display = 'flex';
 
-        setTimeout(() => {
-            document.getElementById('pickedTeamName').innerText = pickedTeam;
-            document.getElementById('pickedGroupName').innerText = activeGroup.toUpperCase();
-            document.getElementById('popup').style.display = 'flex';
-        }, 4100);
-    });
+        console.log("VISUAL & LOGICAL MATCH:", pickedTeam);
+    }, 4100);
+});
 
     // Confirmation
     document.getElementById('confirmAlloc').addEventListener('click', () => {
